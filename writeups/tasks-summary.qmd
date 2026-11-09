@@ -18,7 +18,11 @@ Fitting the paragraph-only model produced a warning that some fitted probabiliti
 
 ### Bigrams
 
-Do bigrams capture additional information relevant to the classification of interest? Answer the question, **briefly** describe what analysis you conducted to arrive at your answer, and provide quantitative evidence supporting your answer.
+Bigrams capture some additional information about claims status, but not enough to improve predictions on new pages.
+
+We first fit the word-based logistic principal component regression from the previous task. We then tokenized the page text into bigrams (dropping stop words and keeping the 578 bigrams that appear in at least 10 training pages) and took the first 50 principal components of the bigram tf-idf data. A second logistic regression used the word model's predicted log-odds (computed out-of-sample with 5-fold cross-validation on the training pages) together with the 50 bigram components.
+
+On the training pages, adding the bigram components significantly improved model fit (deviance fell from 1778.8 to 1600.5 for 50 added terms, p < 0.001), so the bigrams do carry information beyond the words. On the held-out test pages, however, accuracy did not improve: 0.790 for the word model alone and 0.760 with bigrams added (391 test pages). This difference is within sampling noise (standard error of the difference about 0.030, z = -1.03), so the bigram model is not reliably better or worse. The extra components most likely fit patterns specific to the training pages that do not carry over to new pages.
 
 ### Neural net
 
