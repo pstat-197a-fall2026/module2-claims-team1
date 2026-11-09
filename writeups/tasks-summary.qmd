@@ -1,12 +1,20 @@
 ---
 title: "Summary of exploratory tasks"
-author: 'YOUR NAMES HERE'
+author: 'Adrian Filip, Abigaile Co, Erika Nares, Sou Hamura'
 date: today
 ---
 
 ### HTML scraping
 
-Does including header content improve predictions? Answer the question and provide quantitative evidence supporting your answer.
+Including header content did not improve predictions. We compared logistic principal component regression (50 components, 80/20 train/test split of pages) using paragraph text only against paragraph text plus header tags (h1 to h6). Words appearing in fewer than 20 training pages were dropped in both versions.
+
+Using all available test pages, accuracy was 0.790 with paragraphs only (391 test pages) and 0.793 with headers added (421 test pages). These are not a fair comparison, because the 30 extra pages in the header version had no paragraph text and only had words once headers were included.
+
+Restricting both versions to the same 391 test pages, accuracy was 0.790 without headers and 0.785 with headers.
+
+Neither difference is meaningful. Each accuracy has a standard error of about 0.02, so the difference between two accuracies has a standard error of about 0.029. The first difference (+0.003) gives a z-score of 0.11 and the matched-page difference (-0.005) gives a z-score of -0.17. Both are far below 2, so the gaps are within sampling noise. The one benefit of headers was recovering text for roughly 30 pages that had no paragraph content.
+
+Fitting the paragraph-only model produced a warning that some fitted probabilities were numerically 0 or 1. This affected only 12 training pages (under 1%) and does not change our conclusions. Training accuracy (0.797) was nearly identical to test accuracy (0.790), so the model is not overfitting, and the warning only affects coefficient estimates, not predictive accuracy.
 
 ### Bigrams
 
