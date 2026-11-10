@@ -3,6 +3,11 @@ library(tidymodels)
 
 load('data/claims-clean-example.RData')
 
+
+# ORIGINAL RUN (no headers, using the initial commit data) WITH SLIGHTLY MODIFIED PREPROCESSING 
+# (word model baseline, reused from task 1)
+#######################
+
 # split by page id so the same pages can be reused for every comparison
 set.seed(110122)
 partitions <- initial_split(claims_clean, prop = 0.8)
@@ -46,8 +51,6 @@ fit <- glm(y ~ ., data = d_train, family = binomial)
 p <- predict(fit, newdata = data.frame(pc_test), type = 'response')
 pred <- factor(levels(y_train)[(p > 0.5) + 1], levels = levels(y_train))
 mean(pred == y_test)
-
-
 
 
 # training accuracy
