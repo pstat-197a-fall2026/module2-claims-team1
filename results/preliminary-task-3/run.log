@@ -1,0 +1,18 @@
+Tokenizing and lemmatizing text (cached inside the Task 3 folder)...
+Fitting training-only TF-IDF and PCA for validation...
+Validation candidate 1/9: 8 hidden units; decay 0.1
+Validation candidate 2/9: 16 hidden units; decay 0.1
+Validation candidate 3/9: 32 hidden units; decay 0.1
+Validation candidate 4/9: 8 hidden units; decay 1
+Validation candidate 5/9: 16 hidden units; decay 1
+Validation candidate 6/9: 32 hidden units; decay 1
+Validation candidate 7/9: 8 hidden units; decay 10
+Validation candidate 8/9: 16 hidden units; decay 10
+Validation candidate 9/9: 32 hidden units; decay 10
+Refitting selected network and logistic baseline on the full training set...
+                  model  accuracy sensitivity specificity  log_loss
+1 Logistic PCR (50 PCs) 0.7707809   0.7719298   0.7692308 0.5736908
+2        Neural network 0.7884131   0.8114035   0.7573964 0.4992177
+Finished. Outputs: /Users/hamurasou/Documents/ChatGPT/DS Capstone/module2-claims-team1/results/preliminary-task-3
+Warning message:
+glm.fit: fitted probabilities numerically 0 or 1 occurred 
