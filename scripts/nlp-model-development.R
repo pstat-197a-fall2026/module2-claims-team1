@@ -1,5 +1,4 @@
 ## PREPROCESSING
-#################
 
 # can comment entire section out if no changes to preprocessing.R
 source('scripts/preprocessing.R')
@@ -15,7 +14,7 @@ claims_clean <- claims_raw %>%
 save(claims_clean, file = 'data/claims-clean-example.RData')
 
 ## MODEL TRAINING (NN)
-######################
+
 library(tidyverse)
 library(tidymodels)
 library(keras)

@@ -1,0 +1,31 @@
+---
+title: "Predictive modeling of claims status"
+author: 'Adrian Filip, Abigaile Co, Erika Nares, Sou Hamura'
+date: today
+---
+
+### Abstract
+
+All readable text on each page (title, meta description, headers, paragraphs, and list and table text) was scraped from the raw HTML and represented as tf-idf weights of lemmatized word tokens. For binary classification, a linear support vector machine achieved an estimated 83.6% accuracy on held-out pages, up from 79.0% for the paragraph-only principal component logistic regression from the preliminary tasks.
+
+### Preprocessing
+
+From each page we extracted the text of the title, meta description, headers (h1 to h6), paragraphs, and list, table, and quote elements. Paragraphs alone left 193 pages (about 9%) with no text; the extra elements recovered all but 26 of them. Text was cleaned the same way as in class (URLs, emails, punctuation, digits, and symbols removed, lowercased), split into words, stripped of stop words, lemmatized, and limited to words of three or more letters. Each page was represented by tf-idf weights (log term frequency, rows scaled to unit length) over the words appearing in at least 5 training pages (about 9,300 words for the final model). The vocabulary and idf weights are learned from training pages only and stored with the model, so new pages are scored with the same features.
+
+### Methods
+
+**Binary classification.** We used a linear support vector machine (e1071) on the tf-idf features. The cost parameter was chosen by 5-fold cross-validation on the training pages from {0.1, 0.3, 1, 3}; cost = 1 was best. We compared against ridge, elastic net, and lasso logistic regression (glmnet, penalty chosen by 10-fold cross-validation), with and without bigrams, and with paragraph-only, paragraph-and-header, and full-page text. Using the full page mattered most (about +3 points over paragraphs only); bigrams raised cross-validation accuracy slightly but lowered held-out accuracy, so they were left out. The SVM and ridge logistic regression performed about the same, and the SVM was chosen for its higher cross-validation accuracy. The final model was refit on all 2,165 labeled pages.
+
+**Multiclass classification.** *\[To be added.\]*
+
+### Results
+
+Binary classification, evaluated on the same 428 held-out pages (20%) used in the preliminary tasks; "Relevant claim content" is the positive class.
+
+| Model                              | Accuracy | Sensitivity | Specificity |
+|------------------------------------|---------:|------------:|------------:|
+| Linear SVM, full page (final)      |    0.836 |       0.836 |       0.837 |
+| Ridge logistic, full page          |    0.834 |       0.828 |       0.842 |
+| PCR, paragraphs only (preliminary) |    0.790 |           — |           — |
+
+The baseline was scored only on test pages with paragraph text; restricted to those pages, the SVM's accuracy is 0.831, still about 4 points higher. Each accuracy has a standard error of about 0.018, so the SVM and ridge models are effectively tied.
