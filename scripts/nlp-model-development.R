@@ -75,3 +75,18 @@ history <- model %>%
 
 # save the entire model as a SavedModel
 save_model_tf(model, "results/example-model")
+
+
+
+###########################
+load('data/claims-raw.RData')
+nchar(claims_raw$text_tmp[1270])
+summary(nchar(claims_raw$text_tmp))
+
+source('scripts/preprocessing.R')
+load('data/claims-raw.RData')
+parse_fn(claims_raw$text_tmp[1270])
+
+filtered <- claims_raw %>% filter(str_detect(text_tmp, '<!'))
+nchar(filtered$text_tmp[1270])
+parse_fn(filtered$text_tmp[1270])
