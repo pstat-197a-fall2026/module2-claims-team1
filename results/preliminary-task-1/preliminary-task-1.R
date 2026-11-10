@@ -1,7 +1,11 @@
 source('scripts/preprocessing.R')
 library(tidymodels)
 
-load('data/claims-clean-example.RData')
+load('data/claims-clean-example.RData') # claims_clean data (initial commit)
+
+# ORIGINAL RUN (no headers, using the initial commit data) WITH SLIGHTLY MODIFIED PREPROCESSING 
+#######################
+
 
 # split by page id so the same pages can be reused for every comparison
 set.seed(110122)
@@ -13,8 +17,9 @@ test_ids <- testing(partitions)$.id
 wide <- nlp_fn(claims_clean)
 
 # save so you don't have to rerun nlp_fn next time
-save(wide, file = 'data/claims-wide.RData')
-# next time, skip the nlp_fn step above and run: load('data/claims-wide.RData')
+save(wide, file = 'results/preliminary-task-1/task1-wide-paragraphs.RData')
+# next time, skip the nlp_fn step above and run: load('results/preliminary-task-1/task1-wide-paragraphs.RData')
+
 
 train_df <- wide %>% filter(.id %in% train_ids)
 test_df <- wide %>% filter(.id %in% test_ids)
@@ -106,11 +111,11 @@ parse_data_headers <- function(.df){
 # parse raw html with headers included (slow)
 load('data/claims-raw.RData')
 claims_clean_headers <- claims_raw %>% parse_data_headers()
-save(claims_clean_headers, file = 'data/claims-clean-headers.RData')
+save(claims_clean_headers, file = 'results/preliminary-task-1/task1-clean-headers.RData')
 
 # word tokenization, tf-idf (slow, lemmatizing)
 wide_h <- nlp_fn(claims_clean_headers)
-save(wide_h, file = 'data/claims-wide-headers.RData')
+save(wide_h, file = 'results/preliminary-task-1/task1-wide-headers.RData')
 
 # same train/test pages as the baseline
 train_df_h <- wide_h %>% filter(.id %in% train_ids)
