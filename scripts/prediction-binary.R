@@ -19,9 +19,16 @@ bclass_pred <- factor(as.character(predict(binary_model$fit, x_new)),
                       levels = binary_model$levels)
 
 pred_df <- tibble(.id = test_text$.id, bclass.pred = bclass_pred)
+
+load('results/preds-multiclass.RData')
+
+
 # add mclass.pred from the multiclass model (task b) before saving the final
 # results/preds-group1.RData, e.g. pred_df %>% left_join(mclass_df, by = '.id')
 
-save(pred_df, file = 'results/preds-binary.RData')
+pred_df <- pred_df %>% left_join(mclass_df, by = '.id')
+
+save(pred_df, file = 'results/preds.RData')
 
 #table(pred_df$bclass.pred)
+#table(pred_df$mclass.pred)
