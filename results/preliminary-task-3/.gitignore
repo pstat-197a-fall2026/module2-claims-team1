@@ -1,0 +1,9 @@
+/heldout-predictions.csv
+/heldout-predictions.rds
+/run.log
+/selected-configuration.rds
+/session-info.txt
+/split-ids.rds
+/task3-models.rds
+/validation-results.csv
+/word-counts.rds
