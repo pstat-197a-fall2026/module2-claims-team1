@@ -7,6 +7,7 @@ source('scripts/preprocessing-binary.R')
 library(e1071)
 library(glmnet)
 library(rsample)
+library(yardstick)
 
 ## PREPROCESSING
 
@@ -41,17 +42,13 @@ y_test <- y_all[test_ids]
 
 # accuracy, sensitivity, specificity ('Relevant claim content' = positive)
 metrics <- function(pred, truth){
-  cls <- levels(truth)
-  f1_scores <- sapply(cls, function(c) {
-    tp <- sum(pred == c & truth == c)
-    fp <- sum(pred == c & truth != c)
-    fn <- sum(pred != c & truth == c)
-    prec <- if (tp + fp > 0) tp / (tp + fp) else 0
-    rec  <- if (tp + fn > 0) tp / (tp + fn) else 0
-    if (prec + rec > 0) 2 * (prec * rec) / (prec + rec) else 0
-  })
-  tibble(accuracy = mean(pred == truth),
-         macro_f1 = mean(f1_scores))
+  pred_f <- factor(pred, levels = levels(truth))
+  tibble(
+    accuracy    = accuracy_vec(truth, pred_f),
+    sensitivity = sens_vec(truth, pred_f, estimator = 'macro'),
+    specificity = spec_vec(truth, pred_f, estimator = 'macro'),
+    macro_f1    = f_meas_vec(truth, pred_f, estimator = 'macro')
+  )
 }
 
 # tune SVM cost with 5-fold cross-validation on training pages
@@ -67,14 +64,11 @@ tibble(cost = costs, cv_acc = cv_acc)
 svm_fit <- svm(x_train, y_train, kernel = 'linear', cost = best_cost, scale = FALSE)
 svm_pred <- predict(svm_fit, x_test)
 
-# comparison 1: ridge logistic regression on the same features
+# ridge logistic regression on the same features
 set.seed(1)
 ridge_cv <- cv.glmnet(x_train, y_train, family = 'multinomial', alpha = 0,
                       nfolds = 10, type.measure = 'class')
 ridge_pred <- predict(ridge_cv, x_test, s = 'lambda.min', type = 'class')[, 1]
-
-# comparison 2: baseline from preliminary task 1 (PCR, paragraphs only)
-baseline_acc <- 0.790
 
 eval_tbl <- bind_rows(
   metrics(svm_pred, y_test) %>% mutate(model = 'Linear SVM (final)', .before = 1),
