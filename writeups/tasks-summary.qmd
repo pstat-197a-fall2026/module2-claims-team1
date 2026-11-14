@@ -26,12 +26,8 @@ On the training pages, adding the bigram components significantly improved model
 
 ### Neural net
 
-Summarize the neural network model you trained by desribing:
+The neural network slightly exceeded the logistic principal component regression baseline recomputed for this experiment, but the improvement was within sampling noise.
 
--   architecture
+We used paragraph text represented by tf-idf weights and reduced to 50 principal components, with words appearing in fewer than 20 training pages dropped. Vocabulary, idf weights, principal components, and input scaling were learned from training pages only. We compared nine network configurations, varying the hidden-layer size (8, 16, or 32 units) and weight penalty (0.1, 1, or 10), using a separate validation split within the training set. The selected network had 50 inputs, one hidden layer of 8 sigmoid units, a sigmoid output, and direct input-to-output connections. It minimized binary cross-entropy with a weight penalty of 1 using the BFGS optimizer, which converged within the limit of 1,000 iterations. These are optimizer iterations rather than training epochs.
 
--   optimization and loss
-
--   training epochs
-
--   predictive accuracy
+On the same 397 held-out pages, accuracy was 0.788 for the neural network and 0.771 for logistic principal component regression. The network's sensitivity was 0.811 and specificity was 0.757, treating relevant claim content as the positive class. A paired comparison of prediction errors gave p = 0.382, so the accuracy gain does not establish a reliable advantage. The network exceeded the recomputed baseline, but this comparison differs from Task 1's reported 0.790 accuracy because the usable pages and idf estimation differed.
