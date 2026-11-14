@@ -1,46 +1,24 @@
 ---
 title: "Predictive modeling of claims status"
-author: 'YOUR NAMES HERE'
+author: 'Adrian Filip, Abigaile Co, Erika Nares, Sou Hamura'
 date: today
 ---
 
 ### Abstract
 
-Provide a 3-5 sentence summary of your work on the primary task. Indicate what input data was used, what method was used for binary class predictions, what method was used for multiclass predictions, and what estimated accuracies were achieved.
-
-All readable text on each page (title, meta description, headers, paragraphs, and list and table text) was scraped from the raw HTML and represented as tf-idf weights of lemmatized word tokens. For binary classification, a linear support vector machine achieved an estimated 83.6% accuracy on held-out pages, up from 79.0% for the paragraph-only principal component logistic regression from the preliminary tasks.
+All readable text on each page (title, meta description, headers, paragraphs, and list and table text) was scraped from the raw HTML and represented as tf-idf weights of lemmatized word tokens. For binary classification, a linear support vector machine achieved an estimated 83.6% accuracy on held-out pages, up from 79.0% for the paragraph-only principal component logistic regression from the preliminary tasks. For multiclass predictions, we used a linear support vector machine on the same full-page tf-idf features, achieving an estimated 87.1% accuracy on held-out pages, up from 79.4% for multinomial ridge logistic regression
 
 ### Preprocessing
-
-In one paragraph lay out your preprocessing pipeline. No need to provide exact step-by-step detail; just give an overview of the main components:
-
-- what text content was extracted from HTML
-
-- how text was cleaned
-
-- how cleaned text was represented quantitatively
 
 From each page we extracted the text of the title, meta description, headers (h1 to h6), paragraphs, and list, table, and quote elements. Paragraphs alone left 193 pages (about 9%) with no text; the extra elements recovered all but 26 of them. Text was cleaned the same way as in class (URLs, emails, punctuation, digits, and symbols removed, lowercased), split into words, stripped of stop words, lemmatized, and limited to words of three or more letters. Each page was represented by tf-idf weights (log term frequency, rows scaled to unit length) over the words appearing in at least 5 training pages (about 9,300 words for the final model). The vocabulary and idf weights are learned from training pages only and stored with the model, so new pages are scored with the same features.
 
 ### Methods
 
-Describe your final predictive models. Include one paragraph with details on the binary classification approach, and one on the multiclass approach. Include for each:
-
-- what ML/statistical method was used
-
-- model specification and hyperparameter selection
-
-- training method
-
 **Binary classification.** We used a linear support vector machine (e1071) on the tf-idf features. The cost parameter was chosen by 5-fold cross-validation on the training pages from {0.1, 0.3, 1, 3}; cost = 1 was best. We compared against ridge, elastic net, and lasso logistic regression (glmnet, penalty chosen by 10-fold cross-validation), with and without bigrams, and with paragraph-only, paragraph-and-header, and full-page text. Using the full page mattered most (about +3 points over paragraphs only); bigrams raised cross-validation accuracy slightly but lowered held-out accuracy, so they were left out. The SVM and ridge logistic regression performed about the same, and the SVM was chosen for its higher cross-validation accuracy. The final model was refit on all 2,165 labeled pages.
 
-**Multi-class classification.** Using the same text extraction and tf-idf preprocessing as the binary task, we trained a linear support vector machine to predict multi-class labels. Similarly, the cost parameter was chosen from {0.1, 0.3, 1, 3}, but this time cost = 3 was the best. We then compared against the multinomial ridge logistic regression (glmnet, penalty chosen by 10-fold cross-validation) on the same features as the binary classification. The linear SVM greatly outperformed the ridge logistic with a an accuracy of 87.1% compared to 79.4%. Similar to the binary classification, the final model was refit on all 2,165 labelled pages.
+**Multi-class classification.** Using the same text extraction and tf-idf preprocessing as the binary task, we trained a linear support vector machine (e1071) to predict five multi-class labels. Similarly, the cost parameter was chosen by 5-fold cross-validation on the training pages from {0.1, 0.3, 1, 3}, but this time cost = 3 was the best. We then compared against the multinomial ridge logistic regression (glmnet, penalty chosen by 10-fold cross-validation) on the same features as the binary classification. The linear SVM greatly outperformed the ridge logistic with an accuracy of 87.1% compared to 79.4%, so the SVM was chosen as the best model. Similar to the binary classification, the final model was refit on all 2,165 labelled pages.
 
 ### Results
-
-Indicate the predictive accuracy of the binary classifications and the multiclass classifications. Provide a table for each, and report sensitivity, specificity, and accuracy.[^1]
-
-[^1]: Read [this article](https://yardstick.tidymodels.org/articles/multiclass.html) on multiclass averaging.
 
 Binary classification, evaluated on the same 428 held-out pages (20%) used in the preliminary tasks; "Relevant claim content" is the positive class.
 
@@ -51,11 +29,11 @@ Binary classification, evaluated on the same 428 held-out pages (20%) used in th
 
 Each accuracy has a standard error of about 0.018, so the SVM and ridge models are effectively tied.
 
-Multi-class classification, evaluated on the same 428 held-out pages (20%); macro-F1 averages F1 equally across all classes.
+Multi-class classification, evaluated on the same 428 held-out pages (20%) used in the preliminary task across five classes ("N/A: No relevant content.", "Physical Activity", "Possible Fatality", "Potentially unlawful activity", and "Other claim content"); sensitivity and specificity are macro-averaged across all five classes.
 
-| Model                         | Accuracy | Macro-F1 |
-|-------------------------------|---------:|---------:|
-| Linear SVM, full page (final) |    0.871 |    0.849 |
-| Ridge logistic, full page     |    0.794 |    0.652 |
+| Model                         | Accuracy | Sensitivity | Specificity |
+|-------------------------------|---------:|------------:|------------:|
+| Linear SVM, full page (final) |    0.871 |       0.837 |       0.959 |
+| Ridge logistic, full page     |    0.794 |       0.625 |       0.925 |
 
-The SVM's accuracy is 0.871, about 7.7 points higher than multinomial ridge logistic regression (0.794), and its macro-F1 is nearly 20 points higher (0.849 vs. 0.652). Each accuracy has a standard error of around 0.018, so unlike the binary task where both models were tied, the linear SVM clearly outperforms ridge logistic regression here.
+The SVM's accuracy is 0.871, about 7.7 points higher than multinomial ridge logistic regression (0.794), and its sensitivity is about 18 points higher (0.837 vs. 0.625). The specificty for both models was high. Each accuracy has a standard error of around 0.018, so unlike the binary task where both models were tied, the linear SVM clearly outperformed the ridge logistic regression. The SVM likely outperformed the ridge logistic model because the the ridge penalty caused it to underpredict rare classes, which was not a problem when working with binary classification. 
