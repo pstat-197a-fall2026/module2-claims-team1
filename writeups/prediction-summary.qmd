@@ -6,9 +6,7 @@ date: today
 
 ### Abstract
 
-Provide a 3-5 sentence summary of your work on the primary task. Indicate what input data was used, what method was used for binary class predictions, what method was used for multiclass predictions, and what estimated accuracies were achieved.
-
-All readable text on each page (title, meta description, headers, paragraphs, and list and table text) was scraped from the raw HTML and represented as tf-idf weights of lemmatized word tokens. For binary classification, a linear support vector machine achieved an estimated 83.6% accuracy on held-out pages, up from 79.0% for the paragraph-only principal component logistic regression from the preliminary tasks. For multiclass predictions, we used a linear support vector machine on the same full-page tf-idf features, achieving an estimated 87.1% accuracy on held-out pages, up from 79.4% for multinomial ridge logistic regression
+All readable text on each page (title, meta description, headers, paragraphs, and list and table text) was scraped from the raw HTML and represented as tf-idf weights of lemmatized word tokens. For binary classification, a linear support vector machine achieved an estimated 84.1% accuracy on held-out pages, up from 79.0% for the paragraph-only principal component logistic regression from the preliminary tasks. For multiclass predictions, we used a linear support vector machine on the same full-page tf-idf features, achieving an estimated 87.1% accuracy on held-out pages, up from 79.4% for multinomial ridge logistic regression
 
 ### Preprocessing
 
@@ -38,4 +36,4 @@ Multi-class classification, evaluated on the same 428 held-out pages (20%) used 
 | Linear SVM, full page (final) |    0.871 |       0.837 |       0.959 |
 | Ridge logistic, full page     |    0.794 |       0.625 |       0.925 |
 
-The SVM's accuracy is 0.871, about 7.7 points higher than multinomial ridge logistic regression (0.794), and its sensitivity is about 18 points higher (0.837 vs. 0.625). The specificity for both models was high. Each accuracy has a standard error of around 0.018, so unlike the binary task where both models were tied, the linear SVM clearly outperformed the ridge logistic regression. The SVM likely outperformed the ridge logistic model because the the ridge penalty caused it to underpredict rare classes, which was not a problem when working with binary classification. 
+The SVM's accuracy is 0.871, about 7.7 points higher than multinomial ridge logistic regression (0.794), and its sensitivity is about 18 points higher (0.837 vs. 0.625). The specificity for both models was high. Each accuracy has a standard error of around 0.018, so unlike the binary task where both models were tied, the linear SVM clearly outperformed the ridge logistic regression. The SVM likely outperformed the ridge logistic model because the ridge penalty caused it to underpredict rare classes, which was not a problem when working with binary classification. 

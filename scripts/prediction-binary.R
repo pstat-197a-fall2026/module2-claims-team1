@@ -2,6 +2,7 @@
 
 ## generate binary predictions on the test pages with the saved model
 source('scripts/preprocessing-binary.R')
+source('scripts/prediction-multiclass.R')   # creates results/preds-multiclass.RData
 library(e1071)
 
 load('data/claims-test.RData')
