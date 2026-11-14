@@ -28,7 +28,7 @@ load('results/preds-multiclass.RData')
 
 pred_df <- pred_df %>% left_join(mclass_df, by = '.id')
 
-save(pred_df, file = 'results/preds.RData')
+save(pred_df, file = 'results/preds-group1.RData')
 
 #table(pred_df$bclass.pred)
 #table(pred_df$mclass.pred)
